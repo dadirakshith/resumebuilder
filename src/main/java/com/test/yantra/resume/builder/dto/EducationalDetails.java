@@ -43,7 +43,7 @@ public class EducationalDetails{
 	private double percentage;
 	
 	@Column(length = 100)
-	@Pattern(regexp = "^[A-Za-z ']*[^ ]+$", message = "Invalid University Name!!")
+	@Pattern(regexp = "^[a-zA-Z]*\\s?[a-zA-Z]*[^ ]+$", message = "Invalid University Name!!")
 	private String university;
 
 }
