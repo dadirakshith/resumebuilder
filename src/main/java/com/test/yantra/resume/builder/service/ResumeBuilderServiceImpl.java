@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionSystemException;
+import org.springframework.validation.annotation.Validated;
 
 import com.test.yantra.resume.builder.dto.EducationalDetails;
 import com.test.yantra.resume.builder.dto.EmployeeResumeDetails;
@@ -33,6 +34,7 @@ import com.test.yantra.resume.builder.wrapper.ResumeBuilderWrapper;
 import com.test.yantra.resume.builder.wrapper.TechnologyDetailsWrapper;
 
 @Service
+@Validated
 public class ResumeBuilderServiceImpl implements ResumeBuilderService {
 
 	@Autowired

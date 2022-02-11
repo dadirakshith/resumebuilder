@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import lombok.AllArgsConstructor;
@@ -26,10 +27,13 @@ public class EducationalDetails{
 	private int id;
 	
 	@Column(length = 100)
+	@NotBlank(message = "Qualification cannot be Empty!!")
+	@Pattern(regexp = "^[a-zA-Z]*$", message = "Invalid Qualification!!!")
 	private String qualification;
 	
 	@Column(length = 100) 
-	@Pattern(regexp = "^[a-zA-z &]*$", message = "Invalid value for specialization!! ")
+	@NotBlank(message = "Specialization cannot be Empty!!")
+	@Pattern(regexp = "^[a-zA-z&]*$", message = "Invalid value for specialization!! ")
 	private String specialization;
 	
 	@Column
@@ -43,7 +47,8 @@ public class EducationalDetails{
 	private double percentage;
 	
 	@Column(length = 100)
-	@Pattern(regexp = "^[a-zA-Z]*\\s?[a-zA-Z]*[^ ]+$", message = "Invalid University Name!!")
+	@NotBlank(message = "University Name cannot be Empty!!")
+	@Pattern(regexp = "^([a-zA-Z]+\\s)*[a-zA-Z]+$", message = "Invalid University Name!!")
 	private String university;
 
 }
