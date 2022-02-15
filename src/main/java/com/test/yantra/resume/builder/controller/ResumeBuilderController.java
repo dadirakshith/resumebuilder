@@ -5,11 +5,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.yantra.resume.builder.common.ResumeBuilderConstants;
 import com.test.yantra.resume.builder.exception.RelevantExperienceGreaterThanTotalExperienceException;
@@ -60,9 +56,7 @@ public class ResumeBuilderController {
 		ResumeBuilderWrapper data = mapper.readValue(resume, ResumeBuilderWrapper.class);
 
 		byte[] imgArr = myfile.getBytes();
-		//String imgStr = Base64.encodeBase64String(imgArr);
-		//System.out.println(imgStr);
-
+		
 		data.setPhoto(imgArr);
 
 		ResumeBuilderWrapper resumeData = resumeBuilderService.saveResume(data);
@@ -86,11 +80,11 @@ public class ResumeBuilderController {
 		ResumeBuilderWrapper resumeData = resumeBuilderService.getResumeByProfileIdAndResumeType(profileId,
 				resumeTypeId);
 		if (resumeData != null) {
-			return new ResponseEntity<ResumeBuilderResponse>(
+			return new ResponseEntity<>(
 					new ResumeBuilderResponse(false, ResumeBuilderConstants.RESUME_PRESENT_MESSAGE, resumeData),
 					HttpStatus.OK);
 		} else {
-			return new ResponseEntity<ResumeBuilderResponse>(
+			return new ResponseEntity<>(
 					new ResumeBuilderResponse(true, ResumeBuilderConstants.RESUME_NOT_PRESENT_MESSAGE, resumeData),
 					HttpStatus.OK);
 		}
@@ -103,15 +97,14 @@ public class ResumeBuilderController {
 	 * @throws ResumeTypeIdNotPresentException
 	 */
 	@GetMapping("resume-builder-inventory/get-resumes/{profileId}")
-	public ResponseEntity<ResumeBuilderListResponse> getResumes(@PathVariable String profileId)
-			throws ResumeTypeIdNotPresentException {
+	public ResponseEntity<ResumeBuilderListResponse> getResumes(@PathVariable String profileId) {
 		List<String> allResumeId = resumeBuilderService.getResumesByProfileId(profileId);
 		if (allResumeId.isEmpty()) {
-			return new ResponseEntity<ResumeBuilderListResponse>(
+			return new ResponseEntity<>(
 					new ResumeBuilderListResponse(true, ResumeBuilderConstants.RESUME_NOT_PRESENT_MESSAGE, null),
 					HttpStatus.OK);
 		} else {
-			return new ResponseEntity<ResumeBuilderListResponse>(
+			return new ResponseEntity<>(
 					new ResumeBuilderListResponse(false, ResumeBuilderConstants.RESUME_PRESENT_MESSAGE, allResumeId),
 					HttpStatus.OK);
 		}

@@ -1,6 +1,7 @@
 package com.test.yantra.resume.builder.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -11,10 +12,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.annotation.Validated;
 
 import com.test.yantra.resume.builder.dto.EducationalDetails;
@@ -23,6 +22,7 @@ import com.test.yantra.resume.builder.dto.PersonalDetails;
 import com.test.yantra.resume.builder.dto.ProjectDetails;
 import com.test.yantra.resume.builder.dto.TechnologyDetails;
 import com.test.yantra.resume.builder.dto.TechnologyItems;
+import com.test.yantra.resume.builder.exception.InvalidTechnologiesException;
 import com.test.yantra.resume.builder.exception.RelevantExperienceGreaterThanTotalExperienceException;
 import com.test.yantra.resume.builder.exception.ResumeTypeIdNotPresentException;
 import com.test.yantra.resume.builder.repository.EducationalDetailsRepository;
@@ -53,65 +53,71 @@ public class ResumeBuilderServiceImpl implements ResumeBuilderService {
 	private EmployeeResumeDetailsRepository employeeResumeDetailsRepository;
 
 	@Override
-	public ResumeBuilderWrapper saveResume(ResumeBuilderWrapper resume) throws RelevantExperienceGreaterThanTotalExperienceException {
+	public ResumeBuilderWrapper saveResume(ResumeBuilderWrapper resume)
+			throws RelevantExperienceGreaterThanTotalExperienceException {
 
 		ResumeBuilderWrapper wrapper = new ResumeBuilderWrapper();
-		
-		
-		
 
 		EducationalDetails educationalDetails = resume.getEducationalDetails();
 		wrapper.setEducationalDetails(educationalDetails);
 		educationalDetailsRepository.save(educationalDetails);
 
 		PersonalDetails personalDetails = resume.getPersonalDetails();
-		
+
 		wrapper.setPersonalDetails(personalDetails);
 		personalDetailsRepository.save(personalDetails);
-		
+
 		String te = personalDetails.getTotalExperience();
 		String re = personalDetails.getRelevantExperience();
-		
-		te = te.replaceAll("year", "_");
-		re = re.replaceAll("year", "_");
-		
-		te = te.replaceAll("month", "");
-		re = re.replaceAll("month", "");
-		
-		System.out.println(te);
-		System.out.println(re);
-		
+
+		te = te.replace("year", "_");
+		re = re.replace("year", "_");
+
+		te = te.replace("month", "");
+		re = re.replace("month", "");
+
 		double years = Double.parseDouble(te.split("_")[0]);
 		double months = Double.parseDouble(te.split("_")[1]);
-		months = months/12;
+		months = months / 12;
 		years += months;
 		double totalExp = years;
-		
+
 		years = Double.parseDouble(re.split("_")[0]);
 		months = Double.parseDouble(re.split("_")[1]);
-		months = months/12;
+		months = months / 12;
 		years += months;
 		double releventExp = years;
-		
-		if(releventExp > totalExp)
-		{
-			throw new RelevantExperienceGreaterThanTotalExperienceException("Relevant Experience is Greater Than Total Experience!!");
+
+		if (releventExp > totalExp) {
+			throw new RelevantExperienceGreaterThanTotalExperienceException(
+					"Relevant Experience is Greater Than Total Experience!!");
 		}
-		
-		
-		
 
 		List<ProjectDetails> projectList = resume.getProjectDetails();
 		wrapper.setProjectDetails(projectList);
 		for (ProjectDetails project : projectList) {
+
+			if (!validateTechnologies(project.getFrontendTechnology())) {
+				throw new InvalidTechnologiesException("Invalid FrontEnd Technologies!!!");
+			}
+			if (!validateTechnologies(project.getBackendTechnology())) {
+				throw new InvalidTechnologiesException("Invalid Backend Technologies!!!");
+			}
+			if (!validateTechnologies(project.getDesignPatterns())) {
+				throw new InvalidTechnologiesException("Invalid Design Patterns!!!");
+			}
+			if (!validateTechnologies(project.getDatabaseInfo())) {
+				throw new InvalidTechnologiesException("Invalid DataBase Info!!!");
+			}
+			if (!validateTechnologies(project.getDevelopmentTools())) {
+				throw new InvalidTechnologiesException("Invalid Development Tools!!!");
+			}
 			projectDetailsRepository.save(project);
 		}
 
 		List<TechnologyDetailsWrapper> technologyList = resume.getTechnologyDetails();
 
-		System.out.println(technologyList);
-
-		List<TechnologyDetails> techData = new ArrayList<TechnologyDetails>();
+		List<TechnologyDetails> techData = new ArrayList<>();
 		wrapper.setTechnologyDetails(technologyList);
 		for (TechnologyDetailsWrapper technology : technologyList) {
 			TechnologyDetails tech = new TechnologyDetails();
@@ -121,8 +127,9 @@ public class ResumeBuilderServiceImpl implements ResumeBuilderService {
 
 			String s = "";
 			for (TechnologyItems items : techItems) {
-				s += items.getTechName() + ":";
-				s += items.getRatings() + ",";
+				s = s.concat(items.getTechName() + ":");
+				s = s.concat(items.getRatings() + ",");
+
 			}
 			tech.setItems(s);
 
@@ -165,15 +172,25 @@ public class ResumeBuilderServiceImpl implements ResumeBuilderService {
 		wrapper.setResumeTypeId(resumeTypeId);
 		wrapper.setEmployeeId("");
 		wrapper.setPhoto(resume.getPhoto());
-		
+
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-	    Validator validator = factory.getValidator();
-	    Set<ConstraintViolation<ResumeBuilderWrapper>> violations = validator.validate(resume);
-	    if (!violations.isEmpty()) {
-	      throw new ConstraintViolationException(violations);
-	    }
+		Validator validator = factory.getValidator();
+		Set<ConstraintViolation<ResumeBuilderWrapper>> violations = validator.validate(resume);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
 
 		return wrapper;
+	}
+
+	private boolean validateTechnologies(String[] technologyArr) {
+		String regExp = "^[^ ](?=.*[A-Za-z])?[\\dA-Za-z ]+[^ ]$";
+		for (String technology : technologyArr) {
+			if (!technology.matches(regExp)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -194,7 +211,7 @@ public class ResumeBuilderServiceImpl implements ResumeBuilderService {
 			fetchedWrapper.setProjectDetails(resumeDetails.getProjectdetails());
 			List<TechnologyDetails> technologiyDetailsList = resumeDetails.getTechnologydetails();
 
-			List<TechnologyDetailsWrapper> technologyDetailsWrapperList = new ArrayList<TechnologyDetailsWrapper>();
+			List<TechnologyDetailsWrapper> technologyDetailsWrapperList = new ArrayList<>();
 			for (TechnologyDetails technologyDetails : technologiyDetailsList) {
 				TechnologyDetailsWrapper techDetailsWrapper = new TechnologyDetailsWrapper();
 
@@ -202,20 +219,19 @@ public class ResumeBuilderServiceImpl implements ResumeBuilderService {
 				String itemsString = technologyDetails.getItems();
 				String[] itemsArr = itemsString.split(",");
 
-				List<TechnologyItems> technologyItemsList = new ArrayList<TechnologyItems>();
+				List<TechnologyItems> technologyItemsList = new ArrayList<>();
 				for (int i = 0; i < itemsArr.length; i++) {
 					TechnologyItems techItem = new TechnologyItems();
 					techItem.setTechName(itemsArr[i].split(":")[0]);
 					techItem.setRatings(Integer.parseInt(itemsArr[i].split(":")[1]));
 					technologyItemsList.add(techItem);
 				}
-				// System.out.println(technologyItemsList); 	
 				techDetailsWrapper.setItems(technologyItemsList);
 
 				technologyDetailsWrapperList.add(techDetailsWrapper);
 			}
 			fetchedWrapper.setTechnologyDetails(technologyDetailsWrapperList);
-		} catch (ConstraintViolationException  e) {
+		} catch (ConstraintViolationException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new ResumeTypeIdNotPresentException("Data is not present!!!");
@@ -228,7 +244,7 @@ public class ResumeBuilderServiceImpl implements ResumeBuilderService {
 	public List<String> getResumesByProfileId(String profileId) {
 		List<EmployeeResumeDetails> allResumesData = employeeResumeDetailsRepository.findByProfileId(profileId);
 
-		List<String> allResumeTypeId = new ArrayList<String>();
+		List<String> allResumeTypeId = new ArrayList<>();
 
 		for (EmployeeResumeDetails employeeResumeDetails : allResumesData) {
 			allResumeTypeId.add(employeeResumeDetails.getResumeTypeId());

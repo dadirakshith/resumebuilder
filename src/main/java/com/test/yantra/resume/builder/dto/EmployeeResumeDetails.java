@@ -12,10 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-
-import com.test.yantra.resume.builder.wrapper.TechnologyDetailsWrapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

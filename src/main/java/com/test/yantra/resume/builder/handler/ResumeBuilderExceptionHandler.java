@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.test.yantra.resume.builder.exception.InvalidTechnologiesException;
 import com.test.yantra.resume.builder.exception.RelevantExperienceGreaterThanTotalExperienceException;
 import com.test.yantra.resume.builder.exception.ResumeBuilderException;
 import com.test.yantra.resume.builder.exception.ResumeTypeIdNotPresentException;
@@ -44,13 +45,19 @@ public class ResumeBuilderExceptionHandler {
 			msg = s.get().getMessage();
 		}
 
-		return new ResponseEntity<ResumeBuilderExceptionResponse>(new ResumeBuilderExceptionResponse(true, msg, null),
+		return new ResponseEntity<>(new ResumeBuilderExceptionResponse(true, msg, null), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(RelevantExperienceGreaterThanTotalExperienceException.class)
+	public ResponseEntity<ResumeBuilderExceptionResponse> relevantExperienceGreaterThanTotalExperienceExceptionHandler(
+			RelevantExperienceGreaterThanTotalExperienceException e) {
+		return new ResponseEntity<>(new ResumeBuilderExceptionResponse(true, e.getMessage(), null),
 				HttpStatus.BAD_REQUEST);
 	}
-	
-	@ExceptionHandler(RelevantExperienceGreaterThanTotalExperienceException.class)
-	public ResponseEntity<ResumeBuilderExceptionResponse> RelevantExperienceGreaterThanTotalExperienceExceptionHandler(
-			RelevantExperienceGreaterThanTotalExperienceException e) {
+
+	@ExceptionHandler(InvalidTechnologiesException.class)
+	public ResponseEntity<ResumeBuilderExceptionResponse> invalidTechnologiesExceptionHandler(
+			InvalidTechnologiesException e) {
 		return new ResponseEntity<>(new ResumeBuilderExceptionResponse(true, e.getMessage(), null),
 				HttpStatus.BAD_REQUEST);
 	}

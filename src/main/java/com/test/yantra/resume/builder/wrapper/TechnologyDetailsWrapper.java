@@ -15,11 +15,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TechnologyDetailsWrapper
-{
-	
+public class TechnologyDetailsWrapper {
+
 	@NotEmpty(message = "Technology Type cannot be Empty!!!")
-	@Pattern(regexp = "^[^ ][a-zA-Z ]+[^ ]$",message = "Invalid Technology Details TYpe")
+	@Pattern(regexp = "^[^ ][a-zA-Z ]+[^ ]$", message = "Invalid Technology Details TYpe")
 	private String type;
 	private List<@Valid TechnologyItems> items;
 }

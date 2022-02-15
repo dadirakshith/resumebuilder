@@ -3,9 +3,7 @@ package com.test.yantra.resume.builder.wrapper;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 
-import com.sun.istack.NotNull;
 import com.test.yantra.resume.builder.dto.EducationalDetails;
 import com.test.yantra.resume.builder.dto.PersonalDetails;
 import com.test.yantra.resume.builder.dto.ProjectDetails;
@@ -17,8 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResumeBuilderWrapper 
-{
+public class ResumeBuilderWrapper {
 	private String profileId;
 	private String employeeId;
 	private String resumeTypeId;

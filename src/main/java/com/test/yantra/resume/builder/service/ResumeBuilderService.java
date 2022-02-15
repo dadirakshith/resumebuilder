@@ -14,3 +14,4 @@ public interface ResumeBuilderService {
 
 	public List<String> getResumesByProfileId(String profileId);
 }
+	

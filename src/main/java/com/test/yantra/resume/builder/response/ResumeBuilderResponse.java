@@ -5,6 +5,7 @@ import com.test.yantra.resume.builder.wrapper.ResumeBuilderWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

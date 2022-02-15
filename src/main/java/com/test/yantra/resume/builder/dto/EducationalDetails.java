@@ -28,12 +28,12 @@ public class EducationalDetails{
 	
 	@Column(length = 100)
 	@NotBlank(message = "Qualification cannot be Empty!!")
-	@Pattern(regexp = "^[a-zA-Z]*$", message = "Invalid Qualification!!!")
+	@Pattern(regexp = "^[a-zA-Z]{2,}$", message = "Invalid Qualification!!!")
 	private String qualification;
 	
 	@Column(length = 100) 
 	@NotBlank(message = "Specialization cannot be Empty!!")
-	@Pattern(regexp = "^[a-zA-z&]*$", message = "Invalid value for specialization!! ")
+	@Pattern(regexp = "^[a-zA-Z&]*$", message = "Invalid value for specialization!! ")
 	private String specialization;
 	
 	@Column
@@ -42,7 +42,7 @@ public class EducationalDetails{
 	private int passOutYear;
 	
 	@Column
-	@Min(value = 40, message = "Percentage should be minimum 40%")
+	@Min(value = 35, message = "Percentage should be minimum 35%")
 	@Max(value = 100, message = "Percentage should be maximum 100%")
 	private double percentage;
 	

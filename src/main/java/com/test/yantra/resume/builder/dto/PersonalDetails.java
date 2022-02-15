@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -45,11 +44,11 @@ public class PersonalDetails{
 	private String[] summary;
 	
 	@Column
-	@Pattern(regexp = "^[0-2]?[0-9]{1}[\"year\"]{4}[0-9]?[0-1]?[\"month\"]{5}$" , message = "Invalid Total Experience")
+	@Pattern(regexp = "^[0-2]?[0-9]{1}[year]{4}[0-9]?[0-1]?[month]{5}$" , message = "Invalid Total Experience")
 	private String totalExperience;
 	
 	@Column
-	@Pattern(regexp = "^[0-2]?[0-9]{1}[\"year\"]{4}[0-9]?[0-1]?[\"month\"]{5}$", message = "Invalid Relevant Experience")
+	@Pattern(regexp = "^[0-2]?[0-9]{1}[year]{4}[0-9]?[0-1]?[month]{5}$", message = "Invalid Relevant Experience")
 	private String relevantExperience;
 	
 	@Column(length = 15)
