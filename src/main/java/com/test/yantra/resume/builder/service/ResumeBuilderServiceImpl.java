@@ -1,7 +1,6 @@
 package com.test.yantra.resume.builder.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -67,53 +66,12 @@ public class ResumeBuilderServiceImpl implements ResumeBuilderService {
 		wrapper.setPersonalDetails(personalDetails);
 		personalDetailsRepository.save(personalDetails);
 
-		String te = personalDetails.getTotalExperience();
-		String re = personalDetails.getRelevantExperience();
-
-		te = te.replace("year", "_");
-		re = re.replace("year", "_");
-
-		te = te.replace("month", "");
-		re = re.replace("month", "");
-
-		double years = Double.parseDouble(te.split("_")[0]);
-		double months = Double.parseDouble(te.split("_")[1]);
-		months = months / 12;
-		years += months;
-		double totalExp = years;
-
-		years = Double.parseDouble(re.split("_")[0]);
-		months = Double.parseDouble(re.split("_")[1]);
-		months = months / 12;
-		years += months;
-		double releventExp = years;
-
-		if (releventExp > totalExp) {
-			throw new RelevantExperienceGreaterThanTotalExperienceException(
-					"Relevant Experience is Greater Than Total Experience!!");
-		}
+		checkTotalAndReleventExperience(personalDetails);
 
 		List<ProjectDetails> projectList = resume.getProjectDetails();
 		wrapper.setProjectDetails(projectList);
-		for (ProjectDetails project : projectList) {
 
-			if (!validateTechnologies(project.getFrontendTechnology())) {
-				throw new InvalidTechnologiesException("Invalid FrontEnd Technologies!!!");
-			}
-			if (!validateTechnologies(project.getBackendTechnology())) {
-				throw new InvalidTechnologiesException("Invalid Backend Technologies!!!");
-			}
-			if (!validateTechnologies(project.getDesignPatterns())) {
-				throw new InvalidTechnologiesException("Invalid Design Patterns!!!");
-			}
-			if (!validateTechnologies(project.getDatabaseInfo())) {
-				throw new InvalidTechnologiesException("Invalid DataBase Info!!!");
-			}
-			if (!validateTechnologies(project.getDevelopmentTools())) {
-				throw new InvalidTechnologiesException("Invalid Development Tools!!!");
-			}
-			projectDetailsRepository.save(project);
-		}
+		checkAllTechnologies(projectList);
 
 		List<TechnologyDetailsWrapper> technologyList = resume.getTechnologyDetails();
 
@@ -181,6 +139,51 @@ public class ResumeBuilderServiceImpl implements ResumeBuilderService {
 		}
 
 		return wrapper;
+	}
+
+	private void checkAllTechnologies(List<ProjectDetails> projectList) {
+		for (ProjectDetails project : projectList) {
+
+			if (!validateTechnologies(project.getFrontendTechnology())) {
+				throw new InvalidTechnologiesException("Invalid FrontEnd Technologies!!!");
+			}
+			if (!validateTechnologies(project.getBackendTechnology())) {
+				throw new InvalidTechnologiesException("Invalid Backend Technologies!!!");
+			}
+			if (!validateTechnologies(project.getDesignPatterns())) {
+				throw new InvalidTechnologiesException("Invalid Design Patterns!!!");
+			}
+			if (!validateTechnologies(project.getDatabaseInfo())) {
+				throw new InvalidTechnologiesException("Invalid DataBase Info!!!");
+			}
+			if (!validateTechnologies(project.getDevelopmentTools())) {
+				throw new InvalidTechnologiesException("Invalid Development Tools!!!");
+			}
+			projectDetailsRepository.save(project);
+		}
+
+	}
+
+	private void checkTotalAndReleventExperience(PersonalDetails personalDetails)
+			throws RelevantExperienceGreaterThanTotalExperienceException {
+		double totalExp = getExperienceInDouble(personalDetails.getTotalExperience());
+		double releventExp = getExperienceInDouble(personalDetails.getRelevantExperience());
+
+		if (releventExp > totalExp) {
+			throw new RelevantExperienceGreaterThanTotalExperienceException(
+					"Relevant Experience is Greater Than Total Experience!!");
+		}
+	}
+
+	private double getExperienceInDouble(String experience) {
+		experience = experience.replace("year", "_");
+		experience = experience.replace("month", "");
+
+		double years = Double.parseDouble(experience.split("_")[0]);
+		double months = Double.parseDouble(experience.split("_")[1]);
+		months = months / 12;
+		years += months;
+		return years;
 	}
 
 	private boolean validateTechnologies(String[] technologyArr) {
