@@ -37,7 +37,7 @@ public class PersonalDetails{
 	
 	@Column
 	@NotBlank(message = "Primary Skill cannot be Empty!!")
-	@Pattern(regexp = "^[a-zA-Z]*$", message = "Invalid Primary Skill!!!")
+	@Pattern(regexp = "^[a-zA-Z+#.]*$", message = "Invalid Primary Skill!!!")
 	private String primarySkill;
 	
 	@Column(length = 1000)
