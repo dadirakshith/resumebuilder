@@ -187,7 +187,7 @@ public class ResumeBuilderServiceImpl implements ResumeBuilderService {
 	}
 
 	private boolean validateTechnologies(String[] technologyArr) {
-		String regExp = "^[^ ](?=.*[A-Za-z])?[\\dA-Za-z ]+[^ ]$";
+		String regExp = "^[^ ](?![0-9]*$)([a-zA-Z0-9]+\\s?)*[^ ]$";
 		for (String technology : technologyArr) {
 			if (!technology.matches(regExp)) {
 				return false;
