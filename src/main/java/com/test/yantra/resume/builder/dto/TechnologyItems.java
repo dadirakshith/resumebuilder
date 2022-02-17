@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class TechnologyItems
 {
 	@NotEmpty(message = "Technology Name cannot be Empty!!!")
-	@Pattern(regexp = "^[ A-Za-z0-9_@./#&+-]*$",message = "Invalid Tech Name!!!")
+	@Pattern(regexp = "^(?![0-9]*$)[a-zA-Z0-9.+#]+$",message = "Invalid Tech Name!!!")
 	private String techName;
 	@Min(value = 0, message = "Ratings Should be Between 0 to 5 ")
 	@Max(value = 5, message = "Ratings Should be Between 0 to 5 ")

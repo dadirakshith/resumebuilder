@@ -70,12 +70,12 @@ public class ProjectDetails {
 	
 	@Column(length = 1000)
 	@NotBlank(message = "Project Description cannot be Empty!!")
-	@Pattern(regexp = "^[^ ]([a-zA-Z0-9.,!:'\\/\"()-]+\\s)*[a-zA-Z0-9.]+$", message = "Invalid Project Discription")
+	@Pattern(regexp = "^[^ ]([a-zA-Z0-9.,!:'\\\"()-]+\\s)*[a-zA-Z0-9.]+$", message = "Invalid Project Discription")
 	private String projectDescription;
 	
 	@Column(length = 1000)
 	@NotBlank(message = "Roles And Responsibalities cannot be Empty!!")
-	@Pattern(regexp = "^[^ ]([a-zA-Z0-9.,!:'\\/\"()-]+\\s)*[a-zA-Z0-9.]+$", message = "Invalid Roles And Responsibalities!!")
+	@Pattern(regexp = "^[^ ]([a-zA-Z0-9.,!:'\\\"()-]+\\s)*[a-zA-Z0-9.]+$", message = "Invalid Roles And Responsibalities!!")
 	private String rolesAndResponsibalities;
 
 }

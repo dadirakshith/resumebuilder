@@ -41,6 +41,7 @@ public class PersonalDetails{
 	private String primarySkill;
 	
 	@Column(length = 1000)
+	@Size(min = 1, max = 800, message = "Summary should range between 50 to 800 characters!!")
 	private String[] summary;
 	
 	@Column
